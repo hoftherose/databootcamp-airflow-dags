@@ -28,6 +28,6 @@ hello_operator = PythonOperator(
     task_id='hello_task', python_callable=print_hello, dag=dag)
 
 bye_operator = PythonOperator(
-    task_id='bye_task', python_callable=print_bye(), dag=dag)
+    task_id='bye_task', python_callable=print_bye, dag=dag)
 
 hello_operator >> bye_operator
