@@ -68,9 +68,15 @@ class GCSToPostgresTransfer(BaseOperator):
             object_name=self.object,
         )
 
-    def upload_df_to_pg(self, df: pd.DataFrame):
+    def upload_df_to_pg(self, data: pd.DataFrame):
         """Upload dataframe to pg database"""
         conn = self.pg_hook.get_conn()
         self.log.info("Aquired postgres connection")
-        df.to_sql(self.table, conn, schema=self.schema)
+        self.log.info("Loading to %s.%s", self.schema, self.table)
+        data.to_sql(
+            name=self.table,
+            con=conn,
+            schema=self.schema,
+            if_exists="append",
+        )
         self.log.info("uploaded dataframe to database")
