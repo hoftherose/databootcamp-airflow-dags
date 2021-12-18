@@ -21,6 +21,7 @@ with DAG(
     )
 
     gcs2postgres = GCSToPostgresTransfer(
+        task_id="gcs_to_postgres",
         database="purchase",
         table="user_purchase",
         bucket="terraformtests-333814-bucket",
