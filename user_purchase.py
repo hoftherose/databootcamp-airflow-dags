@@ -26,6 +26,8 @@ with DAG(
         table="user_purchase",
         bucket="terraformtests-333814-bucket",
         object_name="user_purchase.csv",
+        gcp_conn_id="google_cloud_default",
+        postgres_conn_id="postgres_default",
         dag=dag,
     )
 
