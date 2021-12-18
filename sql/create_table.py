@@ -1,8 +1,8 @@
 """SQL command definitions"""
 
 CREATE_USER_PURCHASE_TABLE = """
-    DROP TABLE purchase.user_purchase;
-    CREATE TABLE IF NOT EXISTS purchase.user_purchase (
+    DROP TABLE public.user_purchase;
+    CREATE TABLE IF NOT EXISTS public.user_purchase (
         invoice_number varchar(10),
         stock_code varchar(20),
         detail varchar(1000),

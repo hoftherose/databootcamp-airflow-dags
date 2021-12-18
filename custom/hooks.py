@@ -17,7 +17,7 @@ class GCSToPostgresTransfer(BaseOperator):
     # pylint: disable=keyword-arg-before-vararg
     def __init__(
         self,
-        database: str,
+        schema: str,
         table: str,
         bucket: str,
         object_name: str,
@@ -31,7 +31,7 @@ class GCSToPostgresTransfer(BaseOperator):
     ):
         super(GCSToPostgresTransfer, self).__init__(*args, **kwargs)
         self.table = table
-        self.database = database
+        self.schema = schema
         self.bucket = bucket
         self.object = object_name
 
