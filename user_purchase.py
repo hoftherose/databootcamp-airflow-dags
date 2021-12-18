@@ -11,8 +11,9 @@ from sql.create_table import CREATE_USER_PURCHASE_TABLE
 
 with DAG(
     "user_purchase_gcs_to_postgres",
-    schedule_interval=None,
-    start_date=datetime(2021, 12, 20),
+    description="Upload purchase data from GCS to postgres",
+    schedule_interval="0 12 * * *",
+    start_date=datetime(2021, 11, 20),
     catchup=False,
 ) as dag:
     create_user_table = PostgresOperator(
@@ -32,4 +33,4 @@ with DAG(
         dag=dag,
     )
 
-create_user_table >> gcs2postgres
+    create_user_table >> gcs2postgres
