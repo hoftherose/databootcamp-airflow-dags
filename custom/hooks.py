@@ -45,14 +45,14 @@ class GCSToPostgresTransfer(BaseOperator):
 
     def execute(self, context: Any):
         self.log.info("Retrieving %s from %s bucket", self.object, self.bucket)
-        file = self.get_gcs_file()
-        self.log.info("Retrieved file in %s", file)
+        with self.get_gcs_file() as file:
+            self.log.info("Retrieved file in %s", file)
 
-        df_products = pd.read_csv(
-            file,
-            sep=",",
-            low_memory=False,
-        )
+            df_products = pd.read_csv(
+                file,
+                sep=",",
+                low_memory=False,
+            )
         self.log.info(df_products)
         self.log.info(df_products.info())
 
