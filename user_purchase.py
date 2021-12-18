@@ -19,6 +19,7 @@ with DAG(
     create_user_table = PostgresOperator(
         task_id="create_user_purchase_table",
         sql=CREATE_USER_PURCHASE_TABLE,
+        postgres_conn_id="Database connection",
         dag=dag,
     )
 
