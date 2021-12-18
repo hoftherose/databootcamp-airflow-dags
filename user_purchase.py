@@ -31,4 +31,4 @@ with DAG(
         dag=dag,
     )
 
-    create_user_table >> gcs2postgres
+create_user_table >> gcs2postgres
