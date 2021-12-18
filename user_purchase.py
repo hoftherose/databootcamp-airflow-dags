@@ -1,4 +1,6 @@
 """User purchase dags"""
+from datetime import datetime
+
 # pylint: disable=no-name-in-module
 # pylint: disable=import-error
 from airflow import DAG
