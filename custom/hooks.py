@@ -41,7 +41,7 @@ class GCSToPostgresTransfer(BaseOperator):
             google_cloud_storage_conn_id=google_cloud_storage_conn_id,
             impersonation_chain=impersonation_chain,
         )
-        self.postgres_hook = PostgresHook(postgres_conn_id, **kwargs)
+        self.pg_hook = PostgresHook(postgres_conn_id, **kwargs)
 
     def execute(self, context: Any):
         self.log.info("Retrieving %s from %s bucket", self.object, self.bucket)
@@ -55,6 +55,7 @@ class GCSToPostgresTransfer(BaseOperator):
             )
         self.log.info(df_products)
         self.log.info(df_products.info())
+        self.upload_df_to_pg(df_products)
 
     def get_gcs_file(self):
         """Get the gcs file object"""
@@ -66,3 +67,10 @@ class GCSToPostgresTransfer(BaseOperator):
             bucket_name=self.bucket,
             object_name=self.object,
         )
+
+    def upload_df_to_pg(self, df: pd.DataFrame):
+        """Upload dataframe to pg database"""
+        conn = self.pg_hook.get_conn()
+        self.log.info("Aquired postgres connection")
+        df.to_sql(self.table, conn, schema=self.schema)
+        self.log.info("uploaded dataframe to database")
