@@ -4,8 +4,8 @@
 from airflow import DAG
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
-from .custom.hooks import GCSToPostgresTransfer
-from .sql.create_table import CREATE_USER_PURCHASE_TABLE
+from custom.hooks import GCSToPostgresTransfer
+from sql.create_table import CREATE_USER_PURCHASE_TABLE
 
 with DAG(
     "user_purchase_gcs_to_postgres",
