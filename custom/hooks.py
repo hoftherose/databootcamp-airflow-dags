@@ -62,4 +62,7 @@ class GCSToPostgresTransfer(BaseOperator):
             raise AirflowException(
                 f"Could not find {self.object} from bucket {self.bucket}"
             )
-        return self.gcs_hook.provide_file(self.bucket, self.object)
+        return self.gcs_hook.provide_file(
+            bucket_name=self.bucket,
+            object_name=self.object,
+        )
