@@ -27,7 +27,7 @@ with DAG(
         task_id="gcs_to_postgres",
         schema="public",
         table="user_purchase",
-        bucket="terraformtests-333814-bucket",
+        bucket="terraformtests-335517-bucket",
         object_name="user_purchase.csv",
         gcp_conn_id="GCP Connection",
         postgres_conn_id="Database connection",
