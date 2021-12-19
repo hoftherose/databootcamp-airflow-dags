@@ -72,7 +72,8 @@ class GCSToPostgresTransfer(BaseOperator):
         """Upload dataframe to pg database"""
         self.log.info("Inserting rows into database")
         insert_data = list(map(tuple, data.values.tolist()))
-        self.log.info(insert_data)
+        insert_data_sample = list(map(tuple, data.head().values.tolist()))
+        self.log.info(insert_data_sample)
 
         self.pg_hook.insert_rows(
             table=f"{self.schema}.{self.table}",
