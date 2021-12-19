@@ -14,15 +14,26 @@ import pandas as pd
 class GCSToPostgresTransfer(BaseOperator):
     """Object to upload from GCS to Postgres database"""
 
+    COLUMN_MAPPER = {
+        "InvoiceNo": "invoice_number",
+        "StockCode": "stock_code",
+        "Description": "detail",
+        "Quantity": "quantity",
+        "InvoiceDate": "invoice_date",
+        "UnitPrice": "unit_price",
+        "CustomerID": "customer_id",
+        "Country": "country",
+    }
+
     DATA_SCHEME = {
-        "InvoiceNo": "string",
-        "StockCode": "string",
-        "Description": "string",
-        "Quantity": "Int64",
-        "InvoiceDate": "string",
-        "UnitPrice": "float",
-        "CustomerID": "Int64",
-        "Country": "string",
+        "invoice_number": "string",
+        "stock_code": "string",
+        "detail": "string",
+        "quantity": "Int64",
+        "invoice_date": "string",
+        "unit_price": "float",
+        "customer_id": "Int64",
+        "country": "string",
     }
     # pylint: disable=keyword-arg-before-vararg
     def __init__(
@@ -79,16 +90,19 @@ class GCSToPostgresTransfer(BaseOperator):
 
     def upload_df_to_pg(self, data: pd.DataFrame):
         """Upload dataframe to pg database"""
+        self.log.info("Preping dataframe for upload")
+        df_products.rename(
+            mapper=self.COLUMN_MAPPER,
+            axis=1,
+            inplace=True,
+        )
         self.log.info("Inserting rows into database")
+
         insert_data = list(map(tuple, data.values.tolist()))
-
-        insert_data_sample = list(map(tuple, data.head().values.tolist()))
-        self.log.info(insert_data_sample)
-
         self.pg_hook.insert_rows(
             table=f"{self.schema}.{self.table}",
             rows=insert_data,
-            target_fields=self.DATA_SCHEME.keys(),
+            target_fields=self.COLUMN_MAPPER.values(),
             commit_every=1000,
             replace=False,
         )
