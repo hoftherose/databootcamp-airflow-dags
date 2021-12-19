@@ -103,7 +103,7 @@ class GCSToPostgresTransfer(BaseOperator):
             table=f"{self.schema}.{self.table}",
             rows=insert_data,
             target_fields=self.COLUMN_MAPPER.values(),
-            commit_every=1000,
+            commit_every=1,
             replace=False,
         )
         self.log.info("uploaded dataframe to database")
