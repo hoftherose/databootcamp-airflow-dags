@@ -91,7 +91,7 @@ class GCSToPostgresTransfer(BaseOperator):
     def upload_df_to_pg(self, data: pd.DataFrame):
         """Upload dataframe to pg database"""
         self.log.info("Preping dataframe for upload")
-        df_products.rename(
+        data.rename(
             mapper=self.COLUMN_MAPPER,
             axis=1,
             inplace=True,
