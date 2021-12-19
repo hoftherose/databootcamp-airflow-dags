@@ -96,9 +96,10 @@ class GCSToPostgresTransfer(BaseOperator):
             axis=1,
             inplace=True,
         )
+        data.detail.fillna("", inplace=True)
         self.log.info("Inserting rows into database")
 
-        insert_data = list(map(tuple, data.values.tolist()))
+        insert_data = list(map(self._format_to_sql, data.values.tolist()))
         self.pg_hook.insert_rows(
             table=f"{self.schema}.{self.table}",
             rows=insert_data,
@@ -107,3 +108,8 @@ class GCSToPostgresTransfer(BaseOperator):
             replace=False,
         )
         self.log.info("uploaded dataframe to database")
+
+    def _format_to_sql(self, row: list):
+        if pd.isna(row[6]):
+            row[6] = None
+        return tuple(row)
