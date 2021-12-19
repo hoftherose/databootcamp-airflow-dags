@@ -70,40 +70,6 @@ class GCSToPostgresTransfer(BaseOperator):
 
     def upload_df_to_pg(self, data: pd.DataFrame):
         """Upload dataframe to pg database"""
-        data.rename(
-            mapper={
-                "InvoiceNo": "invoice_number",
-                "StockCode": "stock_code",
-                "Description": "detail",
-                "Quantity": "quantity",
-                "InvoiceDate": "invoice_date",
-                "UnitPrice": "unit_price",
-                "CustomerID": "customer_id",
-                "Country": "country",
-            },
-            axis=1,
-            inplace=True,
-        )
-
-        engine = self.pg_hook.get_sqlalchemy_engine()
-        with engine.connect() as conn:
-            self.log.info("Aquired postgres connection")
-            self.log.info("Loading to %s.%s", self.schema, self.table)
-            data.to_sql(
-                name=self.table,
-                con=conn,
-                schema=self.schema,
-                if_exists="append",
-                index=False,
-            )
-            self.log.info("uploaded dataframe to database")
-
-
-class GCSToPostgresTransferFaster(GCSToPostgresTransfer):
-    """Object to upload from GCS to Postgres database"""
-
-    def upload_df_to_pg(self, data: pd.DataFrame):
-        """Upload dataframe to pg database"""
         self.log.info("Inserting rows into database")
         insert_data = list(map(tuple, data.values.tolist()))
 
