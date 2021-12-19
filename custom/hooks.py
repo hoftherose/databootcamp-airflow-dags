@@ -97,3 +97,20 @@ class GCSToPostgresTransfer(BaseOperator):
                 index=False,
             )
             self.log.info("uploaded dataframe to database")
+
+
+class GCSToPostgresTransferFaster(GCSToPostgresTransfer):
+    """Object to upload from GCS to Postgres database"""
+
+    def upload_df_to_pg(self, data: pd.DataFrame):
+        """Upload dataframe to pg database"""
+        self.log.info("Inserting rows into database")
+        insert_data = list(map(tuple, data.values.tolist()))
+
+        self.pg_hook.insert_rows(
+            table=f"{self.schema}.{self.table}",
+            rows=insert_data,
+            commit_every=1000,
+            replace=False,
+        )
+        self.log.info("uploaded dataframe to database")
