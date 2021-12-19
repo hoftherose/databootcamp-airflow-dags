@@ -88,7 +88,6 @@ class GCSToPostgresTransfer(BaseOperator):
 
         self.pg_hook.insert_rows(
             table=f"{self.schema}.{self.table}",
-            table=f"{self.schema}.{self.table}",
             rows=insert_data,
             commit_every=1000,
             replace=False,
