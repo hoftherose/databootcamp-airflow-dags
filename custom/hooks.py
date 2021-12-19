@@ -52,6 +52,16 @@ class GCSToPostgresTransfer(BaseOperator):
                 file,
                 sep=",",
                 low_memory=False,
+                dtype={
+                    "invoice_number": "string",
+                    "stock_code": "string",
+                    "detail": "string",
+                    "quantity": "int",
+                    "unit_price": "float",
+                    "customer_id": "int",
+                    "country": "string",
+                },
+                parse_dates=["invoice_date"],
             )
         self.log.info(df_products)
         self.log.info(df_products.info())
@@ -72,10 +82,12 @@ class GCSToPostgresTransfer(BaseOperator):
         """Upload dataframe to pg database"""
         self.log.info("Inserting rows into database")
         insert_data = list(map(tuple, data.values.tolist()))
+
         insert_data_sample = list(map(tuple, data.head().values.tolist()))
         self.log.info(insert_data_sample)
 
         self.pg_hook.insert_rows(
+            table=f"{self.schema}.{self.table}",
             table=f"{self.schema}.{self.table}",
             rows=insert_data,
             commit_every=1000,
