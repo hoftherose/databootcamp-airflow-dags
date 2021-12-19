@@ -79,5 +79,6 @@ class GCSToPostgresTransfer(BaseOperator):
                 con=conn,
                 schema=self.schema,
                 if_exists="append",
+                index=False,
             )
             self.log.info("uploaded dataframe to database")
