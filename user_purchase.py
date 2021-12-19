@@ -4,6 +4,7 @@ from datetime import datetime
 # pylint: disable=no-name-in-module
 # pylint: disable=import-error
 from airflow import DAG
+from airflow.providers.slack.operators.slack import SlackAPIOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 from custom.hooks import GCSToPostgresTransfer
