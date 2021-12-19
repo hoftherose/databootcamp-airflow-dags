@@ -11,7 +11,7 @@ from airflow.contrib.operators.slack_webhook_operator import SlackWebhookOperato
 MESSAGE = "Module2: Challenge yourself - Integrate Slack with Airflow (message sent by Hector)"
 
 with DAG(
-    "slack_mssg",
+    "slack_msg",
     description="Send slack notification",
     schedule_interval="0 12 * * *",
     start_date=datetime(2021, 11, 20),
@@ -20,7 +20,7 @@ with DAG(
     slack_alert = SlackWebhookOperator(
         task_id="slack_msg",
         http_conn_id="Slack Connection",
-        token=BaseHook.get_connection("Slack Connection").password,
+        webhook_token=BaseHook.get_connection("Slack Connection").password,
         message=MESSAGE,
         dag=dag,
     )
