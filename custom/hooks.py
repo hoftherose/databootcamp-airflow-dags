@@ -14,6 +14,16 @@ import pandas as pd
 class GCSToPostgresTransfer(BaseOperator):
     """Object to upload from GCS to Postgres database"""
 
+    DATA_SCHEME = {
+        "InvoiceNo": "string",
+        "StockCode": "string",
+        "Description": "string",
+        "Quantity": "int",
+        "InvoiceDate": "string",
+        "UnitPrice": "float",
+        "CustomerID": "int",
+        "Country": "string",
+    }
     # pylint: disable=keyword-arg-before-vararg
     def __init__(
         self,
@@ -46,22 +56,14 @@ class GCSToPostgresTransfer(BaseOperator):
     def execute(self, context: Any):
         self.log.info("Retrieving %s from %s bucket", self.object, self.bucket)
         with self.get_gcs_file() as file:
+
             self.log.info("Retrieved file in %s", file)
 
             df_products = pd.read_csv(
                 file,
                 sep=",",
                 low_memory=False,
-                dtype={
-                    "InvoiceNo": "string",
-                    "StockCode": "string",
-                    "Description": "string",
-                    "Quantity": "int",
-                    "InvoiceDate": "string",
-                    "UnitPrice": "float",
-                    "CustomerID": "int",
-                    "Country": "string",
-                },
+                dtype=self.DATA_SCHEME,
             )
         self.log.info(df_products)
         self.log.info(df_products.info())
@@ -89,6 +91,7 @@ class GCSToPostgresTransfer(BaseOperator):
         self.pg_hook.insert_rows(
             table=f"{self.schema}.{self.table}",
             rows=insert_data,
+            target_fields=DATA_SCHEME.keys(),
             commit_every=1000,
             replace=False,
         )
