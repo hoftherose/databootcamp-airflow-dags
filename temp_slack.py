@@ -17,7 +17,7 @@ with DAG(
     start_date=datetime(2021, 11, 20),
     catchup=False,
 ) as dag:
-    slack_alert = SlackWebHookOperator(
+    slack_alert = SlackWebhookOperator(
         task_id="slack_msg",
         http_conn_id="Slack Connection",
         token=BaseHook.get_connection("Slack Connection").password,
