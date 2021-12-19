@@ -18,10 +18,10 @@ class GCSToPostgresTransfer(BaseOperator):
         "InvoiceNo": "string",
         "StockCode": "string",
         "Description": "string",
-        "Quantity": "int",
+        "Quantity": "Int64",
         "InvoiceDate": "string",
         "UnitPrice": "float",
-        "CustomerID": "int",
+        "CustomerID": "Int64",
         "Country": "string",
     }
     # pylint: disable=keyword-arg-before-vararg
@@ -56,9 +56,6 @@ class GCSToPostgresTransfer(BaseOperator):
     def execute(self, context: Any):
         self.log.info("Retrieving %s from %s bucket", self.object, self.bucket)
         with self.get_gcs_file() as file:
-
-            self.log.info("Retrieved file in %s", file)
-
             df_products = pd.read_csv(
                 file,
                 sep=",",
