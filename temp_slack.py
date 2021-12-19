@@ -5,7 +5,7 @@ from datetime import datetime
 # pylint: disable=import-error
 from airflow import DAG
 from airflow.hooks.base_hook import BaseHook
-from airflow.contrib.slack_webhook_operator import SlackWebHookOperator
+from airflow.contrib.operators.slack_webhook_operator import SlackWebHookOperator
 
 MESSAGE = "Module2: Challenge yourself - Integrate Slack with Airflow (message sent by Hector)"
 
