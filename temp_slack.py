@@ -5,7 +5,7 @@ from datetime import datetime
 # pylint: disable=import-error
 from airflow import DAG
 from airflow.hooks.base_hook import BaseHook
-from airflow.providers.slack.operators.slack import SlackAPIOperator
+from airflow.providers.slack.operators.slack import SlackAPIPostOperator
 
 MESSAGE = "Module2: Challenge yourself - Integrate Slack with Airflow (message sent by Hector)"
 
@@ -16,10 +16,10 @@ with DAG(
     start_date=datetime(2021, 11, 20),
     catchup=False,
 ) as dag:
-    slack_alert = SlackAPIOperator(
+    slack_alert = SlackAPIPostOperator(
         task_id="slack_msg",
-        method="https://slack.com/api/chat.postMessage",
         token=BaseHook.get_connection("Slack Connection").password,
-        message=MESSAGE,
+        text=MESSAGE,
+        channel="#data-engineering-bootcamp",
         dag=dag,
     )
