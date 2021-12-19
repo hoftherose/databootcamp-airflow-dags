@@ -53,15 +53,15 @@ class GCSToPostgresTransfer(BaseOperator):
                 sep=",",
                 low_memory=False,
                 dtype={
-                    "invoice_number": "string",
-                    "stock_code": "string",
-                    "detail": "string",
-                    "quantity": "int",
-                    "unit_price": "float",
-                    "customer_id": "int",
-                    "country": "string",
+                    "InvoiceNo": "string",
+                    "StockCode": "string",
+                    "Description": "string",
+                    "Quantity": "int",
+                    "UnitPrice": "float",
+                    "CustomerID": "int",
+                    "Country": "string",
                 },
-                parse_dates=["invoice_date"],
+                parse_dates=["InvoiceDate"],
             )
         self.log.info(df_products)
         self.log.info(df_products.info())
