@@ -37,7 +37,7 @@ with DAG(
         schema="public",
         table="user_purchase",
         bucket="terraformtests-335517-bucket",
-        object_name="user-purchase/user_purchase_sample.csv",
+        object_name="user-purchase/user_purchase.csv",
         gcp_conn_id="GCP Connection",
         postgres_conn_id="Database connection",
         dag=dag,
