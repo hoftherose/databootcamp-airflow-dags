@@ -54,7 +54,7 @@ with DAG(
         cluster_config=CLUSTER_CONFIG,
         region=REGION,
         cluster_name=CLUSTER_NAME,
-        gcp_conn_id="GCP Connection",
+        gcp_conn_id="temp",
     )
 
     submit_job = DataprocSubmitJobOperator(
@@ -62,7 +62,7 @@ with DAG(
         job=PYSPARK_JOB,
         location=REGION,
         project_id=PROJECT_ID,
-        gcp_conn_id="GCP Connection",
+        gcp_conn_id="temp",
     )
 
     delete_cluster = DataprocDeleteClusterOperator(
@@ -70,7 +70,7 @@ with DAG(
         project_id=PROJECT_ID,
         cluster_name=CLUSTER_NAME,
         region=REGION,
-        gcp_conn_id="GCP Connection",
+        gcp_conn_id="temp",
     )
 
     create_cluster >> submit_job >> delete_cluster
