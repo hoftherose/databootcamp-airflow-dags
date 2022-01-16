@@ -36,12 +36,14 @@ PYSPARK_JOB = {
     "pyspark_job": {"main_python_file_uri": PYSPARK_URI},
 }
 
+DAG_NAME = "log_loader"
+
 with DAG(
-    "log_loader",
-    default_args=default_args,
+    DAG_NAME,
     description="Dag to load log data from raw to staging",
-    schedule_interval=None,
-    start_date=days_ago(2),
+    schedule_interval="0 12 * * *",
+    start_date=datetime(2022, 1, 3),
+    catchup=False,
 ) as dag:
 
     create_cluster = DataprocCreateClusterOperator(
@@ -50,6 +52,7 @@ with DAG(
         cluster_config=CLUSTER_CONFIG,
         region=REGION,
         cluster_name=CLUSTER_NAME,
+        gcp_conn_id="GCP Connection",
     )
 
     submit_job = DataprocSubmitJobOperator(
@@ -57,6 +60,7 @@ with DAG(
         job=PYSPARK_JOB,
         location=REGION,
         project_id=PROJECT_ID,
+        gcp_conn_id="GCP Connection",
     )
 
     delete_cluster = DataprocDeleteClusterOperator(
@@ -64,6 +68,7 @@ with DAG(
         project_id=PROJECT_ID,
         cluster_name=CLUSTER_NAME,
         region=REGION,
+        gcp_conn_id="GCP Connection",
     )
 
     create_cluster >> submit_job >> delete_cluster
