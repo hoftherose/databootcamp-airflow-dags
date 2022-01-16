@@ -15,7 +15,7 @@ default_args = {"depends_on_past": False}
 CLUSTER_NAME = "movie-review-cluster"
 REGION = "us-west1"
 PROJECT_ID = "terraformtests-333814"
-PYSPARK_URI = f"gs://{PROJECT_ID}-bucket/spark/logs_etl.py"
+PYSPARK_URI = f"gs://terraformtests-335517-bucket/spark/logs_etl.py"
 
 CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
     project_id=PROJECT_ID,
