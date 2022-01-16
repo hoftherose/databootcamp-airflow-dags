@@ -12,7 +12,7 @@ from airflow.providers.google.cloud.operators.dataproc import (
 
 default_args = {"depends_on_past": False}
 
-CLUSTER_NAME = "pyspark_cluster"
+CLUSTER_NAME = "pyspark-cluster"
 REGION = "us-west1"
 PROJECT_ID = "terraformtests-333814"
 PYSPARK_URI = f"gs://{PROJECT_ID}-bucket/spark/logs_etl.py"
