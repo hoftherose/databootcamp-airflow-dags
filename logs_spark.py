@@ -53,6 +53,7 @@ with DAG(
         cluster_name=CLUSTER_NAME,
         project_id=PROJECT_ID,
         region=REGION,
+        gcp_conn_id="GCP Connection",
         cluster_config=CLUSTER_GENERATOR_CONFIG,
     )
 
