@@ -27,8 +27,8 @@ CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
     master_disk_size=30,
     region=REGION,
     gcp_conn_id="GCP Connection",
-    optional_components=["ANACONDA", "JUPYTER"],
-    properties={"enable_http_port_access": "true"},
+    # optional_components=["ANACONDA", "JUPYTER"],
+    # properties={"EndpointConfig:enable_http_port_access": "true"},
 ).make()
 
 
