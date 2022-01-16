@@ -19,7 +19,7 @@ with DAG(
     DAG_NAME,
     description="Upload purchase data from GCS to postgres",
     schedule_interval="0 12 * * *",
-    start_date=datetime(2021, 11, 20),
+    start_date=datetime(2022, 1, 3),
     catchup=False,
 ) as dag:
     SUCCESS_MESSAGE = f"{DAG_NAME} succeeded at {datetime.now()}"
@@ -61,4 +61,5 @@ with DAG(
         dag=dag,
     )
 
-    create_user_table >> gcs2postgres >> (slack_success_alert, slack_fail_alert)
+    # pylint: disable=pointless-statement
+    create_user_table >> gcs2postgres  # >> (slack_success_alert, slack_fail_alert)
