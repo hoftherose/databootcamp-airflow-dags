@@ -12,7 +12,8 @@ from airflow.providers.google.cloud.operators.dataproc import (
 
 default_args = {"depends_on_past": False}
 
-CLUSTER_NAME = "pyspark-cluster"
+# CLUSTER_NAME = "pyspark-cluster"
+CLUSTER_NAME = "movie-review-cluster"
 REGION = "us-west1"
 PROJECT_ID = "terraformtests-333814"
 PYSPARK_URI = f"gs://{PROJECT_ID}-bucket/spark/logs_etl.py"
@@ -25,7 +26,7 @@ CLUSTER_CONFIG = {
         "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 512},
     },
     "worker_config": {
-        "num_instances": 1,
+        "num_instances": 2,
         "machine_type_uri": "n1-standard-2",
         "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 512},
     },
@@ -55,6 +56,7 @@ with DAG(
         region=REGION,
         cluster_name=CLUSTER_NAME,
         gcp_conn_id="GCP Connection",
+        use_if_exists=True,
     )
 
     submit_job = DataprocSubmitJobOperator(
@@ -65,12 +67,12 @@ with DAG(
         gcp_conn_id="GCP Connection",
     )
 
-    delete_cluster = DataprocDeleteClusterOperator(
-        task_id="delete_dataproc",
-        project_id=PROJECT_ID,
-        cluster_name=CLUSTER_NAME,
-        region=REGION,
-        gcp_conn_id="GCP Connection",
-    )
+    # delete_cluster = DataprocDeleteClusterOperator(
+    #     task_id="delete_dataproc",
+    #     project_id=PROJECT_ID,
+    #     cluster_name=CLUSTER_NAME,
+    #     region=REGION,
+    #     gcp_conn_id="GCP Connection",
+    # )
 
-    create_cluster >> submit_job >> delete_cluster
+    create_cluster >> submit_job  # >> delete_cluster
