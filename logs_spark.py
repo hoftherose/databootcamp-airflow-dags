@@ -12,10 +12,11 @@ from airflow.providers.google.cloud.operators.dataproc import (
 default_args = {"depends_on_past": False}
 
 # CLUSTER_NAME = "pyspark-cluster"
-CLUSTER_NAME = "movie-review-cluster"
+CLUSTER_NAME = "spark-cluster"
 REGION = "us-west1"
 PROJECT_ID = "terraformtests-333814"
-PYSPARK_URI = f"gs://terraformtests-335517-bucket/spark/logs_etl.py"
+PYSPARK_LOG_URI = "gs://terraformtests-335517-bucket/spark/logs_etl.py"
+PYSPARK_REVIEW_URI = "gs://terraformtests-335517-bucket/spark/review_etl.py"
 
 CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
     project_id=PROJECT_ID,
@@ -27,15 +28,19 @@ CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
     master_disk_size=30,
     region=REGION,
     gcp_conn_id="GCP Connection",
-    # optional_components=["ANACONDA", "JUPYTER"],
-    # properties={"EndpointConfig:enable_http_port_access": "true"},
 ).make()
 
 
-PYSPARK_JOB = {
+PYSPARK_LOG_JOB = {
     "reference": {"project_id": PROJECT_ID},
     "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": PYSPARK_URI},
+    "pyspark_job": {"main_python_file_uri": PYSPARK_LOG_URI},
+}
+
+PYSPARK_REVIEW_JOB = {
+    "reference": {"project_id": PROJECT_ID},
+    "placement": {"cluster_name": CLUSTER_NAME},
+    "pyspark_job": {"main_python_file_uri": PYSPARK_REVIEW_URI},
 }
 
 DAG_NAME = "log_loader"
@@ -57,9 +62,17 @@ with DAG(
         cluster_config=CLUSTER_GENERATOR_CONFIG,
     )
 
-    submit_job = DataprocSubmitJobOperator(
+    submit_log_job = DataprocSubmitJobOperator(
         task_id="log_load",
-        job=PYSPARK_JOB,
+        job=PYSPARK_LOG_JOB,
+        location=REGION,
+        project_id=PROJECT_ID,
+        gcp_conn_id="GCP Connection",
+    )
+
+    submit_review_job = DataprocSubmitJobOperator(
+        task_id="review_load",
+        job=PYSPARK_REVIEW_JOB,
         location=REGION,
         project_id=PROJECT_ID,
         gcp_conn_id="GCP Connection",
@@ -73,4 +86,5 @@ with DAG(
         gcp_conn_id="GCP Connection",
     )
 
-    create_cluster >> submit_job >> delete_cluster
+    # pylint: disable=pointless-statement
+    create_cluster >> submit_log_job >> submit_review_job >> delete_cluster
