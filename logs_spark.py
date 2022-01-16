@@ -1,12 +1,11 @@
 from datetime import datetime
 
 from airflow import DAG
-from airflow.utils.dates import days_ago
+
 from airflow.providers.google.cloud.operators.dataproc import (
     ClusterGenerator,
-)
-from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
-from airflow.providers.google.cloud.operators.dataproc import (
+    DataprocCreateClusterOperator,
+    DataprocSubmitJobOperator,
     DataprocDeleteClusterOperator,
 )
 
@@ -18,19 +17,19 @@ REGION = "us-west1"
 PROJECT_ID = "terraformtests-333814"
 PYSPARK_URI = f"gs://{PROJECT_ID}-bucket/spark/logs_etl.py"
 
-
-CLUSTER_CONFIG = {
-    "master_config": {
-        "num_instances": 1,
-        "machine_type_uri": "n1-standard-2",
-        "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 512},
-    },
-    "worker_config": {
-        "num_instances": 2,
-        "machine_type_uri": "n1-standard-2",
-        "disk_config": {"boot_disk_type": "pd-standard", "boot_disk_size_gb": 512},
-    },
-}
+CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
+    project_id=PROJECT_ID,
+    cluster_name=CLUSTER_NAME,
+    num_masters=1,
+    num_workers=0,
+    master_machine_type="n1-standard-2",
+    master_disk_type="pd-standard",
+    master_disk_size=30,
+    region=REGION,
+    gcp_conn_id="GCP Connection",
+    optional_components=["ANACONDA", "JUPYTER"],
+    properties={"enable_http_port_access": True},
+).make()
 
 
 PYSPARK_JOB = {
@@ -49,22 +48,12 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    create_cluster = ClusterGenerator(
+    create_cluster = DataprocCreateClusterOperator(
         task_id="init_dataproc",
-        project_id=PROJECT_ID,
         cluster_name=CLUSTER_NAME,
-        num_masters=1,
-        num_workers=0,
-        master_machine_type="n1-standard-2",
-        master_disk_type="pd-standard",
-        master_disk_size=30,
+        project_id=PROJECT_ID,
         region=REGION,
-        gcp_conn_id="GCP Connection",
-        optional_components=["ANACONDA", "JUPYTER"],
-        properties={"enable_http_port_access": True}
-        # image_version="1.4-debian10",
-        # cluster_config=CLUSTER_CONFIG,
-        # use_if_exists=True,
+        cluster_config=CLUSTER_GENERATOR_CONFIG,
     )
 
     submit_job = DataprocSubmitJobOperator(
@@ -75,12 +64,12 @@ with DAG(
         gcp_conn_id="GCP Connection",
     )
 
-    # delete_cluster = DataprocDeleteClusterOperator(
-    #     task_id="delete_dataproc",
-    #     project_id=PROJECT_ID,
-    #     cluster_name=CLUSTER_NAME,
-    #     region=REGION,
-    #     gcp_conn_id="GCP Connection",
-    # )
+    delete_cluster = DataprocDeleteClusterOperator(
+        task_id="delete_dataproc",
+        project_id=PROJECT_ID,
+        cluster_name=CLUSTER_NAME,
+        region=REGION,
+        gcp_conn_id="GCP Connection",
+    )
 
-    create_cluster >> submit_job  # >> delete_cluster
+    create_cluster >> submit_job >> delete_cluster
