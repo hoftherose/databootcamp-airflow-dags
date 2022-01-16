@@ -1,8 +1,13 @@
-import xml.etree.ElementTree as xml
+from pyspark.context import SparkContext
+from pyspark.sql.session import SparkSession
 from pyspark.sql import Row
+import xml.etree.ElementTree as xml
+
+sc = SparkContext("local")
+spark = SparkSession(sc)
 
 file = "gs://raw_layer/log_reviews.csv"
-saveTo = "gs://staging_data_layer/log_reviews.csv"
+saveTo = "gs://staging_data_layer/log_reviews"
 lines = spark.read.option("header", True).csv(file)
 
 
