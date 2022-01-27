@@ -18,7 +18,7 @@ with DAG(
     catchup=False,
 ) as dag:
     start_python_job = BeamRunPythonPipelineOperator(
-        task_id="start-dataflow",
+        task_id="start_dataflow",
         py_file=GCS_PYTHON,
         runner="DataflowRunner",
         py_options=[],
