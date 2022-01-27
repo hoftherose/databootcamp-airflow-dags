@@ -25,6 +25,7 @@ with DAG(
         py_requirements=["apache-beam[gcp]==2.21.0"],
         py_interpreter="python3",
         dataflow_config={"location": "us-west1"},
+        gcp_conn_id="GCP Connection",
     )
 
     # pylint: disable=pointless-statement
