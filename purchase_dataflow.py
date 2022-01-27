@@ -2,7 +2,9 @@ from datetime import datetime
 
 from airflow import DAG
 
-from airflow.providers.beam.operators.beam import BeamRunPythonPipelineOperator
+from airflow.providers.apache.beam.operators.beam import (
+    BeamRunPythonPipelineOperator,
+)
 
 
 GCS_PYTHON = "gs://terraformtests-335517-bucket/beam/beam_purchases.py"
