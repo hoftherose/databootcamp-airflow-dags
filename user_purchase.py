@@ -5,12 +5,12 @@ from datetime import datetime
 # pylint: disable=import-error
 from airflow import DAG
 
-from airflow.hooks.base_hook import BaseHook
 from airflow.utils.trigger_rule import TriggerRule
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-from airflow.contrib.operators.slack_webhook_operator import (
-    SlackWebhookOperator,
-)
+
+# from airflow.contrib.operators.slack_webhook_operator import (
+#     SlackWebhookOperator,
+# )
 from airflow.contrib.operators.discord_webhook_operator import (
     DiscordWebhookOperator,
 )
@@ -49,7 +49,7 @@ with DAG(
     )
 
     discord_success_alert = DiscordWebhookOperator(
-        task_id="slack_msg_success",
+        task_id="discord_msg_success",
         trigger_rule=TriggerRule.ALL_SUCCESS,
         http_conn_id="Discord Connection",
         message=SUCCESS_MESSAGE,
@@ -58,7 +58,7 @@ with DAG(
     )
 
     discord_fail_alert = DiscordWebhookOperator(
-        task_id="slack_msg_fail",
+        task_id="discord_msg_fail",
         trigger_rule=TriggerRule.ONE_FAILED,
         http_conn_id="Discord Connection",
         message=FAILURE_MESSAGE,

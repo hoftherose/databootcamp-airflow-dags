@@ -1,12 +1,17 @@
 from datetime import datetime
 
 from airflow import DAG
+from airflow.utils.trigger_rule import TriggerRule
 
 from airflow.providers.google.cloud.operators.dataproc import (
     ClusterGenerator,
     DataprocCreateClusterOperator,
     DataprocSubmitJobOperator,
     DataprocDeleteClusterOperator,
+)
+
+from airflow.contrib.operators.discord_webhook_operator import (
+    DiscordWebhookOperator,
 )
 
 default_args = {"depends_on_past": False}
@@ -48,10 +53,12 @@ DAG_NAME = "log_loader"
 with DAG(
     DAG_NAME,
     description="Dag to load log data from raw to staging",
-    schedule_interval="0 12 * * *",
+    schedule_interval="0 13 * * *",
     start_date=datetime(2022, 1, 3),
     catchup=False,
 ) as dag:
+    SUCCESS_MESSAGE = f"{DAG_NAME} succeeded at {datetime.now()}"
+    FAILURE_MESSAGE = f"{DAG_NAME} failed at {datetime.now()}"
 
     create_cluster = DataprocCreateClusterOperator(
         task_id="init_dataproc",
@@ -80,11 +87,36 @@ with DAG(
 
     delete_cluster = DataprocDeleteClusterOperator(
         task_id="delete_dataproc",
+        trigger_rule=TriggerRule.ALWAYS,
         project_id=PROJECT_ID,
         cluster_name=CLUSTER_NAME,
         region=REGION,
         gcp_conn_id="GCP Connection",
     )
 
+    discord_success_alert = DiscordWebhookOperator(
+        task_id="discord_msg_success",
+        trigger_rule=TriggerRule.ALL_SUCCESS,
+        http_conn_id="Discord Connection",
+        message=SUCCESS_MESSAGE,
+        tts=True,
+        dag=dag,
+    )
+
+    discord_fail_alert = DiscordWebhookOperator(
+        task_id="discord_msg_fail",
+        trigger_rule=TriggerRule.ONE_FAILED,
+        http_conn_id="Discord Connection",
+        message=FAILURE_MESSAGE,
+        tts=True,
+        dag=dag,
+    )
+
     # pylint: disable=pointless-statement
-    create_cluster >> submit_log_job >> submit_review_job >> delete_cluster
+    (
+        create_cluster
+        >> submit_log_job
+        >> submit_review_job
+        >> delete_cluster
+        >> (discord_success_alert, discord_fail_alert)
+    )
