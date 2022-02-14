@@ -19,9 +19,9 @@ default_args = {"depends_on_past": False}
 # CLUSTER_NAME = "pyspark-cluster"
 CLUSTER_NAME = "spark-cluster"
 REGION = "us-west1"
-PROJECT_ID = "terraformtests-333814"
-PYSPARK_LOG_URI = "gs://terraformtests-335517-bucket/spark/logs_etl.py"
-PYSPARK_REVIEW_URI = "gs://terraformtests-335517-bucket/spark/review_etl.py"
+PROJECT_ID = "databootcamp-test1"
+PYSPARK_LOG_URI = "gs://databootcamp-templates/logs_etl.py"
+PYSPARK_REVIEW_URI = "gs://databootcamp-templates/review_etl.py"
 
 CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
     project_id=PROJECT_ID,
@@ -83,7 +83,15 @@ with DAG(
 
     delete_cluster = DataprocDeleteClusterOperator(
         task_id="delete_dataproc",
-        trigger_rule=TriggerRule.ALWAYS,
+        trigger_rule=TriggerRule.ALL_SUCCESS,
+        project_id=PROJECT_ID,
+        cluster_name=CLUSTER_NAME,
+        region=REGION,
+    )
+
+    delete_cluster_failed = DataprocDeleteClusterOperator(
+        task_id="delete_dataproc",
+        trigger_rule=TriggerRule.ONE_FAILED,
         project_id=PROJECT_ID,
         cluster_name=CLUSTER_NAME,
         region=REGION,
@@ -112,6 +120,6 @@ with DAG(
         create_cluster
         >> submit_log_job
         >> submit_review_job
-        >> delete_cluster
+        >> (delete_cluster, delete_cluster_failed)
         >> (discord_success_alert, discord_fail_alert)
     )
