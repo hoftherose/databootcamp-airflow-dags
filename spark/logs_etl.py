@@ -7,8 +7,8 @@ sc = SparkContext("local")
 spark = SparkSession(sc)
 
 project_id = "databootcamp-test1"
-file = f"gs://{project_id}-raw_layer/log_reviews.csv"
-saveTo = f"gs://{project_id}-staging_data_layer/log_reviews"
+file = f"gs://{project_id}-raw-layer/log_reviews.csv"
+saveTo = f"gs://{project_id}-staging-data-layer/log_reviews"
 lines = spark.read.option("header", True).csv(file)
 
 
