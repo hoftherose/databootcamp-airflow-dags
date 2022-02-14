@@ -90,7 +90,7 @@ with DAG(
     )
 
     delete_cluster_failed = DataprocDeleteClusterOperator(
-        task_id="delete_dataproc",
+        task_id="delete_dataproc_on_fail",
         trigger_rule=TriggerRule.ONE_FAILED,
         project_id=PROJECT_ID,
         cluster_name=CLUSTER_NAME,
