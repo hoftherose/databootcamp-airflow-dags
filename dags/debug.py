@@ -11,7 +11,7 @@ from airflow.contrib.operators.discord_webhook_operator import (
     DiscordWebhookOperator,
 )
 
-DAG_NAME = "log_loader"
+DAG_NAME = "debugger"
 
 with DAG(
     DAG_NAME,
