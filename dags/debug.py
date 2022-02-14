@@ -3,7 +3,7 @@ import os
 try:
     from dags.db_upload.hooks import GCSToPostgresTransfer
 except ImportError as Err:
-    raise Exception(os.getenv("PYTHONPATH"))
+    raise Exception(os.getcwd())
 
 from datetime import datetime
 
