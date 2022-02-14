@@ -32,13 +32,12 @@ with DAG(
         py_requirements=["apache-beam[gcp]==2.21.0"],
         py_interpreter="python3",
         dataflow_config={"location": "us-west1"},
-        gcp_conn_id="GCP Connection",
     )
 
     discord_success_alert = DiscordWebhookOperator(
         task_id="discord_msg_success",
         trigger_rule=TriggerRule.ALL_SUCCESS,
-        http_conn_id="Discord Connection",
+        http_conn_id="discord_connection",
         message=SUCCESS_MESSAGE,
         tts=True,
         dag=dag,
@@ -47,7 +46,7 @@ with DAG(
     discord_fail_alert = DiscordWebhookOperator(
         task_id="discord_msg_fail",
         trigger_rule=TriggerRule.ONE_FAILED,
-        http_conn_id="Discord Connection",
+        http_conn_id="discord_connection",
         message=FAILURE_MESSAGE,
         tts=True,
         dag=dag,

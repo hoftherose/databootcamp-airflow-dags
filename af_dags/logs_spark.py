@@ -32,7 +32,6 @@ CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
     master_disk_type="pd-standard",
     master_disk_size=30,
     region=REGION,
-    gcp_conn_id="GCP Connection",
 ).make()
 
 
@@ -65,7 +64,6 @@ with DAG(
         cluster_name=CLUSTER_NAME,
         project_id=PROJECT_ID,
         region=REGION,
-        gcp_conn_id="GCP Connection",
         cluster_config=CLUSTER_GENERATOR_CONFIG,
     )
 
@@ -74,7 +72,6 @@ with DAG(
         job=PYSPARK_LOG_JOB,
         location=REGION,
         project_id=PROJECT_ID,
-        gcp_conn_id="GCP Connection",
     )
 
     submit_review_job = DataprocSubmitJobOperator(
@@ -82,7 +79,6 @@ with DAG(
         job=PYSPARK_REVIEW_JOB,
         location=REGION,
         project_id=PROJECT_ID,
-        gcp_conn_id="GCP Connection",
     )
 
     delete_cluster = DataprocDeleteClusterOperator(
@@ -91,13 +87,12 @@ with DAG(
         project_id=PROJECT_ID,
         cluster_name=CLUSTER_NAME,
         region=REGION,
-        gcp_conn_id="GCP Connection",
     )
 
     discord_success_alert = DiscordWebhookOperator(
         task_id="discord_msg_success",
         trigger_rule=TriggerRule.ALL_SUCCESS,
-        http_conn_id="Discord Connection",
+        http_conn_id="discord_default",
         message=SUCCESS_MESSAGE,
         tts=True,
         dag=dag,
@@ -106,7 +101,7 @@ with DAG(
     discord_fail_alert = DiscordWebhookOperator(
         task_id="discord_msg_fail",
         trigger_rule=TriggerRule.ONE_FAILED,
-        http_conn_id="Discord Connection",
+        http_conn_id="discord_default",
         message=FAILURE_MESSAGE,
         tts=True,
         dag=dag,
