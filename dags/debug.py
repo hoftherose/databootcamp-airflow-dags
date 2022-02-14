@@ -1,9 +1,12 @@
 import os
+import sys
+
+sys.path.append("/opt/airflow/dags/repo/dags")
 
 try:
-    from dags.db_upload.hooks import GCSToPostgresTransfer
+    from db_upload.hooks import GCSToPostgresTransfer
 except ImportError as Err:
-    raise Exception(os.getcwd())
+    raise Exception(sys.path)
 
 from datetime import datetime
 
