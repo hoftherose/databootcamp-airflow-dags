@@ -15,7 +15,7 @@ from airflow.contrib.operators.discord_webhook_operator import (
     DiscordWebhookOperator,
 )
 
-from custom.hooks import GCSToPostgresTransfer
+from db_upload.hooks import GCSToPostgresTransfer
 from sql.create_table import CREATE_USER_PURCHASE_TABLE
 
 DAG_NAME = "user_purchase_gcs_to_postgres"
@@ -41,8 +41,8 @@ with DAG(
         task_id="gcs_to_postgres",
         schema="public",
         table="user_purchase",
-        bucket="terraformtests-335517-bucket",
-        object_name="user-purchase/user_purchase.csv",
+        bucket="databootcamp-static-files",
+        object_name="data/user_purchase.csv",
         gcp_conn_id="GCP Connection",
         postgres_conn_id="Database connection",
         dag=dag,
@@ -65,24 +65,6 @@ with DAG(
         tts=True,
         dag=dag,
     )
-
-    # slack_success_alert = SlackWebhookOperator(
-    #     task_id="slack_msg_success",
-    #     trigger_rule=TriggerRule.ALL_SUCCESS,
-    #     http_conn_id="Slack Connection",
-    #     webhook_token=BaseHook.get_connection("Slack Connection").password,
-    #     message=SUCCESS_MESSAGE,
-    #     dag=dag,
-    # )
-
-    # slack_fail_alert = SlackWebhookOperator(
-    #     task_id="slack_msg_fail",
-    #     trigger_rule=TriggerRule.ONE_FAILED,
-    #     http_conn_id="Slack Connection",
-    #     webhook_token=BaseHook.get_connection("Slack Connection").password,
-    #     message=FAILURE_MESSAGE,
-    #     dag=dag,
-    # )
 
     # pylint: disable=pointless-statement
     (
