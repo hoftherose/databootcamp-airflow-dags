@@ -7,8 +7,9 @@ from pyspark.ml.feature import Tokenizer, StopWordsRemover
 sc = SparkContext("local")
 spark = SparkSession(sc)
 
-file = "gs://raw_layer/movie_review.csv"
-saveTo = "gs://staging_data_layer/movie_review.csv"
+project_id = "databootcamp-test1"
+file = f"gs://{project_id}-raw_layer/movie_review.csv"
+saveTo = f"gs://{project_id}-staging_data_layer/movie_review"
 lines = spark.read.option("header", True).csv(file)
 
 
