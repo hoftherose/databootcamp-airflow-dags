@@ -7,10 +7,6 @@ from airflow import DAG
 
 from airflow.utils.trigger_rule import TriggerRule
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-
-# from airflow.contrib.operators.slack_webhook_operator import (
-#     SlackWebhookOperator,
-# )
 from airflow.contrib.operators.discord_webhook_operator import (
     DiscordWebhookOperator,
 )
@@ -72,4 +68,3 @@ with DAG(
         >> gcs2postgres
         >> (discord_success_alert, discord_fail_alert)
     )
-    # >> (slack_success_alert, slack_fail_alert)
