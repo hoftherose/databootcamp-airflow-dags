@@ -4,7 +4,7 @@ import sys
 # sys.path.append("/opt/airflow/dags/repo/dags")
 
 try:
-    from af_dags.db_upload.hooks import GCSToPostgresTransfer
+    from db_upload.hooks import GCSToPostgresTransfer
 except ImportError as Err:
     raise Exception(sys.path)
 

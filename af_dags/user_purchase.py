@@ -12,7 +12,7 @@ from airflow.contrib.operators.discord_webhook_operator import (
 )
 
 from db_upload.hooks import GCSToPostgresTransfer
-from dags.sql.create_table import CREATE_USER_PURCHASE_TABLE
+from sql.create_table import CREATE_USER_PURCHASE_TABLE
 
 DAG_NAME = "user_purchase_gcs_to_postgres"
 
