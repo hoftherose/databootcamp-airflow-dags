@@ -37,7 +37,7 @@ with DAG(
     discord_success_alert = DiscordWebhookOperator(
         task_id="discord_msg_success",
         trigger_rule=TriggerRule.ALL_SUCCESS,
-        http_conn_id="discord_connection",
+        http_conn_id="discord_default",
         message=SUCCESS_MESSAGE,
         tts=True,
         dag=dag,
@@ -46,7 +46,7 @@ with DAG(
     discord_fail_alert = DiscordWebhookOperator(
         task_id="discord_msg_fail",
         trigger_rule=TriggerRule.ONE_FAILED,
-        http_conn_id="discord_connection",
+        http_conn_id="discord_default",
         message=FAILURE_MESSAGE,
         tts=True,
         dag=dag,
