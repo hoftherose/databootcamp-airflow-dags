@@ -14,7 +14,7 @@ from airflow.contrib.operators.discord_webhook_operator import (
 )
 
 DAG_NAME = "static_file_gcs"
-SRC_BUCKET = "databootcamp-tfstate"
+SRC_BUCKET = "databootcamp-static-files"
 DEST_BUCKET = "databootcamp-test1-raw-layer"
 OBJECTS = ["data/log_reviews.csv", "data/movie_review.csv"]
 
