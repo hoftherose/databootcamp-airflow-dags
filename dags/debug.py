@@ -1,9 +1,9 @@
-import sys
+import os
 
 try:
-    from .db_upload.hooks import GCSToPostgresTransfer
-except ImportError:
-    raise Exception(sys.path)
+    from dags.db_upload.hooks import GCSToPostgresTransfer
+except ImportError as Err:
+    raise Exception(os.getenv("PYTHONPATH"))
 
 from datetime import datetime
 
