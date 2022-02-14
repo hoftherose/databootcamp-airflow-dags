@@ -14,9 +14,9 @@ from airflow.contrib.operators.discord_webhook_operator import (
 )
 
 DAG_NAME = "static_file_gcs"
-SRC_BUCKET="databootcamp-tfstate"
-DEST_BUCKET="databootcamp-test1-raw-layer"
-OBJECTS=["data/log_reviews.csv", "data/movie_review.csv"]
+SRC_BUCKET = "databootcamp-tfstate"
+DEST_BUCKET = "databootcamp-test1-raw-layer"
+OBJECTS = ["data/log_reviews.csv", "data/movie_review.csv"]
 
 with DAG(
     DAG_NAME,
@@ -29,7 +29,7 @@ with DAG(
     FAILURE_MESSAGE = f"{DAG_NAME} failed at {datetime.now()}"
 
     transfer_logs = GCSToGCSOperator(
-        task_id="transfer_static_files",
+        task_id="transfer_log_data",
         source_bucket=SRC_BUCKET,
         source_object=OBJECTS[0],
         destination_bucket=DEST_BUCKET,
@@ -38,7 +38,7 @@ with DAG(
     )
 
     transfer_reviews = GCSToGCSOperator(
-        task_id="transfer_static_files",
+        task_id="transfer_review_data",
         source_bucket=SRC_BUCKET,
         source_object=OBJECTS[1],
         destination_bucket=DEST_BUCKET,
@@ -65,4 +65,8 @@ with DAG(
     )
 
     # pylint: disable=pointless-statement
-    transfer_logs >> transfer_reviews >> (discord_success_alert, discord_fail_alert)
+    (
+        transfer_logs
+        >> transfer_reviews
+        >> (discord_success_alert, discord_fail_alert)
+    )
