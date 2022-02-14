@@ -1,6 +1,9 @@
 import sys
 
-print(sys.path)
+try:
+    from .db_upload.hooks import GCSToPostgresTransfer
+except ImportError:
+    raise Exception(sys.path)
 
 from datetime import datetime
 
