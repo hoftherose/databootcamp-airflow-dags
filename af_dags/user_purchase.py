@@ -38,7 +38,6 @@ with DAG(
         table="user_purchase",
         bucket="databootcamp-static-files",
         object_name="data/user_purchase.csv",
-        postgres_conn_id="Database connection",
         dag=dag,
     )
 
