@@ -120,6 +120,7 @@ with DAG(
         create_cluster
         >> submit_log_job
         >> submit_review_job
-        >> (delete_cluster, delete_cluster_failed)
+        >> delete_cluster
+        >> delete_cluster_failed
         >> (discord_success_alert, discord_fail_alert)
     )
