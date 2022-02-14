@@ -20,12 +20,8 @@ default_args = {"depends_on_past": False}
 CLUSTER_NAME = "spark-cluster"
 REGION = "us-west1"
 PROJECT_ID = "databootcamp-test1"
-PYSPARK_LOG_URI = (
-    f"gs://databootcamp-tfstate/databootcamp-templates/logs_etl.py"
-)
-PYSPARK_REVIEW_URI = (
-    f"gs://databootcamp-tfstate/databootcamp-templates/review_etl.py"
-)
+PYSPARK_LOG_URI = "gs://databootcamp-templates/logs_etl.py"
+PYSPARK_REVIEW_URI = "gs://databootcamp-templates/review_etl.py"
 
 CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
     project_id=PROJECT_ID,
