@@ -83,15 +83,7 @@ with DAG(
 
     delete_cluster = DataprocDeleteClusterOperator(
         task_id="delete_dataproc",
-        trigger_rule=TriggerRule.ALL_SUCCESS,
-        project_id=PROJECT_ID,
-        cluster_name=CLUSTER_NAME,
-        region=REGION,
-    )
-
-    delete_cluster_failed = DataprocDeleteClusterOperator(
-        task_id="delete_dataproc_on_fail",
-        trigger_rule=TriggerRule.ONE_FAILED,
+        trigger_rule=TriggerRule.ALL_DONE,
         project_id=PROJECT_ID,
         cluster_name=CLUSTER_NAME,
         region=REGION,
@@ -121,13 +113,5 @@ with DAG(
         >> submit_log_job
         >> submit_review_job
         >> delete_cluster
-        >> (discord_success_alert, discord_fail_alert)
-    )
-
-    (
-        create_cluster
-        >> submit_log_job
-        >> submit_review_job
-        >> delete_cluster_failed
         >> (discord_success_alert, discord_fail_alert)
     )
