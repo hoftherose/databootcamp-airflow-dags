@@ -29,7 +29,7 @@ with DAG(
         py_file=GCS_PYTHON,
         runner="DataflowRunner",
         py_options=[],
-        py_requirements=["apache-beam[gcp]==2.21.0"],
+        py_requirements=["apache-beam[gcp]==2.36.0"],
         py_interpreter="python3",
         dataflow_config={"location": "us-west1", "job_name": "start_dataflow"},
     )
