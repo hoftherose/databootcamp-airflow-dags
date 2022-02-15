@@ -11,8 +11,8 @@ from airflow.contrib.operators.discord_webhook_operator import (
 )
 
 
-GCS_PYTHON = "gs://terraformtests-335517-bucket/beam/beam_purchases.py"
-DAG_NAME = "database_loader"
+GCS_PYTHON = "gs://databootcamp-templates/beam_purchases.py"
+DAG_NAME = "database_processing"
 
 with DAG(
     DAG_NAME,
