@@ -31,7 +31,7 @@ with DAG(
         py_options=[],
         py_requirements=["apache-beam[gcp]==2.21.0"],
         py_interpreter="python3",
-        dataflow_config={"location": "us-west1"},
+        dataflow_config={"location": "us-west1", "job_name": "start_dataflow"},
     )
 
     discord_success_alert = DiscordWebhookOperator(
