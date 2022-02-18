@@ -61,6 +61,21 @@ with DAG(
         cluster_config=CLUSTER_GENERATOR_CONFIG,
     )
 
+    submit_purchase_job = DataprocSubmitJobOperator(
+        task_id="purchase_load",
+        job=PYSPARK_PURCHASE_JOB,
+        location=REGION,
+        project_id=PROJECT_ID,
+    )
+
+    delete_cluster = DataprocDeleteClusterOperator(
+        task_id="delete_dataproc",
+        trigger_rule=TriggerRule.ALL_DONE,
+        project_id=PROJECT_ID,
+        cluster_name=CLUSTER_NAME,
+        region=REGION,
+    )
+
     discord_success_alert = DiscordWebhookOperator(
         task_id="discord_msg_success",
         trigger_rule=TriggerRule.ALL_SUCCESS,
@@ -79,4 +94,9 @@ with DAG(
         dag=dag,
     )
 
-    create_cluster >> (discord_success_alert, discord_fail_alert)
+    (
+        create_cluster
+        >> submit_purchase_job
+        >> delete_cluster
+        >> (discord_success_alert, discord_fail_alert)
+    )
