@@ -37,9 +37,11 @@ CLUSTER_GENERATOR_CONFIG = ClusterGenerator(
 PYSPARK_PURCHASE_JOB = {
     "reference": {"project_id": PROJECT_ID},
     "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": PYSPARK_PURCHASE_URI},
-    "spark_job": {
-        "jar_file_uris": ["gs://databootcamp-templates/jars/jars_postgresql-42.3.1.jar"],
+    "pyspark_job": {
+        "main_python_file_uri": PYSPARK_PURCHASE_URI,
+        "jar_file_uris": [
+            "gs://databootcamp-templates/jars/jars_postgresql-42.3.1.jar"
+        ],
     },
 }
 
