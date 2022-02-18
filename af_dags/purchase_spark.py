@@ -100,6 +100,5 @@ with DAG(
     (
         create_cluster
         >> submit_purchase_job
-        >> delete_cluster
-        >> (discord_success_alert, discord_fail_alert)
+        >> (delete_cluster, discord_success_alert, discord_fail_alert)
     )
