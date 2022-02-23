@@ -1,4 +1,5 @@
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import regexp_replace, col
 
 # the Spark session should be instantiated as follows
 spark = (
@@ -28,5 +29,7 @@ properties = {
 }
 
 rows = spark.read.jdbc(db_url, db_table, properties=properties)
+
+rows = rows.withColumn("detail", regexp_replace(col("detail"), '"', "&quote"))
 
 rows.write.option("header", True).csv(saveTo)
