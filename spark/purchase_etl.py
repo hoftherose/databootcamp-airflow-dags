@@ -29,4 +29,4 @@ properties = {
 
 rows = spark.read.jdbc(db_url, db_table, properties=properties)
 
-rows.write.csv(saveTo)
+rows.write.option("header", True).csv(saveTo)

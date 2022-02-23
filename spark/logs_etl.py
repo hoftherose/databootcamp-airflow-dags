@@ -39,4 +39,4 @@ processed[
         "ip",
         "phone_number",
     ]
-].write.csv(saveTo)
+].write.option("header", True).csv(saveTo)

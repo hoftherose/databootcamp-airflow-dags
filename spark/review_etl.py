@@ -1,8 +1,7 @@
 from pyspark.context import SparkContext
 from pyspark.sql.session import SparkSession
 
-from pyspark.sql.functions import array_contains, when
-from pyspark.ml.feature import Tokenizer, StopWordsRemover
+from pyspark.sql.functions import when
 
 sc = SparkContext("local")
 spark = SparkSession(sc)
@@ -27,4 +26,4 @@ reviews[
         "review_id",
         "positive_review",
     ]
-].write.csv(saveTo)
+].write.option("header", True).csv(saveTo)
