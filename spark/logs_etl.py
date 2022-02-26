@@ -12,6 +12,15 @@ saveTo = f"gs://{project_id}-staging-data-layer/log_reviews"
 lines = spark.read.option("header", True).csv(file)
 
 
+os2browser = {
+    "Microsoft Windows": "Chrome",
+    "Linux": "Firefox",
+    "Apple iOS": "Safari",
+    "Apple MacOS": "Safari",
+    "Google Android": "Chrome",
+}
+
+
 def xml_to_data(row):
     log_tree = xml.fromstring(row.log)
     dic = {}
@@ -25,6 +34,7 @@ def xml_to_data(row):
         location=dic["location"],
         ip=dic["ipAddress"],
         phone_number=dic["phoneNumber"],
+        browser=os2browser[dic["os"]],
     )
 
 
@@ -38,5 +48,6 @@ processed[
         "location",
         "ip",
         "phone_number",
+        "browser",
     ]
 ].write.option("header", True).csv(saveTo)
