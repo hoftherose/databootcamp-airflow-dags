@@ -54,14 +54,19 @@ dim_location[["location_id", "name"]].write.option("header", True).csv(
 # dim_location[["location_id", "name"]].show(5)
 
 # dim_browser
-# dim_browser = logs[["browser"]].distinct()
-# dim_browser = dim_browser.withColumn("browser_id", monotonically_increasing_id())
-# dim_browser = dim_browser.withColumnRenamed("browser", "name")
-# dim_browser[["browser_id", "name"]].write.option("header", True).csv(gold_path+"/browser")
+dim_browser = logs[["browser"]].distinct()
+dim_browser = dim_browser.withColumn(
+    "browser_id", monotonically_increasing_id()
+)
+dim_browser = dim_browser.withColumnRenamed("browser", "name")
+dim_browser[["browser_id", "name"]].write.option("header", True).csv(
+    gold_path + "/browser"
+)
 # dim_browser[["browser_id", "name"]].show(5)
 
 review = reviews.join(logs, reviews.review_id == logs.log_id)
 review = review.join(dim_location, review.location == dim_location.name)
+review = review.join(dim_browser, review.browser == dim_browser.name)
 review = review.join(dim_device, review.device == dim_device.name)
 review = review.join(dim_date, review.log_date == dim_date.name)
 review = review.join(dim_os, review.os == dim_os.name)
@@ -80,7 +85,18 @@ review = review[
 review = review.withColumn(
     "positive_review", review["positive_review"].cast(IntegerType())
 )
-# review[["review_id", "user_id", "positive_review", "location_id", "device_id", "date_id", "os_id"]].write.option("header", True).csv(gold_path+"/review")
+review[
+    [
+        "review_id",
+        "user_id",
+        "positive_review",
+        "location_id",
+        "browser_id",
+        "device_id",
+        "date_id",
+        "os_id",
+    ]
+].write.option("header", True).csv(gold_path + "/review")
 
 purchases = purchases.withColumn(
     "unit_price", purchases["unit_price"].cast(IntegerType())
