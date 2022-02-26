@@ -71,17 +71,6 @@ review = review.join(dim_device, review.device == dim_device.name)
 review = review.join(dim_date, review.log_date == dim_date.name)
 review = review.join(dim_os, review.os == dim_os.name)
 
-review = review[
-    [
-        "review_id",
-        "user_id",
-        "positive_review",
-        "location_id",
-        "device_id",
-        "date_id",
-        "os_id",
-    ]
-]
 review = review.withColumn(
     "positive_review", review["positive_review"].cast(IntegerType())
 )
