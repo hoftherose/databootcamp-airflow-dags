@@ -39,7 +39,7 @@ PYSPARK_JOB = {
     "pyspark_job": {"main_python_file_uri": PYSPARK_URI},
 }
 
-DAG_NAME = "log_loader"
+DAG_NAME = "denormalize_loader"
 
 with DAG(
     DAG_NAME,
